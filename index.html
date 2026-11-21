@@ -509,9 +509,6 @@ function viewLesson() {
     h += '<p class="sub" style="margin-top:0">Hör den Satz an und sprich ihn laut nach. Am besten gleich mit, wie ein Schatten.</p>';
     h += '<p class="kick" style="color:var(--muted)">Satz ' + (i + 1) + " von " + l.lines.length + "</p>" + lineHTML(ln, i, mode === "aus" ? "tippen" : mode);
     h += '<div style="display:flex;gap:10px;justify-content:center;margin:10px 0"><button class="btn red" data-act="shPlay" data-r="1">' + ic("spk") + ' Anhören</button><button class="btn ghost" data-act="shPlay" data-r=".6">Langsam</button></div>';
-    const rs = L.recState || "";
-    h += '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:4px 0 10px">' + (rs === "rec" ? '<button class="btn red" data-act="recStop">' + ic("stop") + " Aufnahme stoppen</button>" : '<button class="btn ghost" data-act="recStart"><span style="width:12px;height:12px;border-radius:6px;background:var(--red);display:inline-block"></span> ' + (rs === "done" ? "Nochmal aufnehmen" : "Mich aufnehmen") + "</button>") + (rs === "done" ? '<button class="btn ghost" data-act="recPlay">' + ic("play", 18) + " Meine Aufnahme</button>" : "") + "</div>";
-    if (rs === "done") h += '<p class="note center">Hör abwechselnd das Original und deine Aufnahme. Was klingt anders?</p>';
     h += '<img src="img/mascot.webp" alt="" class="mascot" style="max-height:150px;margin-top:10px">';
     foot = i < l.lines.length - 1 ? '<button class="btn primary block" data-act="shNext">Nachgesprochen ' + ic("check", 20, 2.5) + "</button>" : '<button class="btn primary block" data-act="next">Alle nachgesprochen, weiter</button>';
   } else if (L.step === 4) {
