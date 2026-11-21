@@ -1,0 +1,90 @@
+{
+"chapters": [
+ {"id": "ankomst", "title": "Ankomst", "level": "A1", "de": "Ankommen: grüßen, vorstellen, Café, einkaufen", "img": "img/ch-ankomst.webp", "badge": "ch-ankomst"},
+ {"id": "vardag", "title": "Vardag", "level": "A2", "de": "Alltag: Arzt, Behörden, Nachbarn, Freizeit", "img": "img/ch-vardag.webp", "badge": "ch-vardag"},
+ {"id": "vanner", "title": "Vänner och jobb", "level": "B1", "de": "Freunde und Arbeit: erzählen, Meinung sagen", "img": "img/ch-vanner.webp", "badge": "ch-vanner"},
+ {"id": "samhallet", "title": "Samhället", "level": "B2", "de": "Gesellschaft: Nachrichten, Diskussion, Kultur", "img": "img/ch-samhallet.webp", "badge": "ch-samhallet"}
+],
+"upcoming": {"ankomst": ["I mataffären", "Min lägenhet", "Min familj", "En vanlig dag", "Klockan", "Vädret", "På stan", "Kläder", "Hos läkaren", "Helgen", "Mat och dryck", "Midsommar"]},
+"lessons": [
+ {"id": "l1", "chapter": "ankomst", "title": "Hej!", "de": "Grüßen und verabschieden", "icon": "flagga",
+  "lines": [
+   {"who": "Anna", "t": [["Hej!", "Hallo!"], ["Hur", "wie"], ["mår", "befindest-dich"], ["du?", "du?"]], "sense": "Hallo! Wie geht es dir?"},
+   {"who": "Janina", "t": [["Bra,", "gut,"], ["tack!", "danke!"], ["Och", "und"], ["du?", "du?"]], "sense": "Gut, danke! Und dir?"},
+   {"who": "Anna", "t": [["Jättebra!", "Riesen-gut!"], ["Ha", "hab"], ["en", "einen"], ["fin", "feinen"], ["dag!", "Tag!"]], "sense": "Super! Hab einen schönen Tag!"},
+   {"who": "Janina", "t": [["Tack,", "danke,"], ["detsamma!", "dasselbe!"], ["Hej", "hallo"], ["då!", "dann!"]], "sense": "Danke, gleichfalls! Tschüss!"}
+  ],
+  "chunks": [["Hej!", "Hallo!"], ["Hur mår du?", "Wie geht es dir?"], ["Bra, tack!", "Gut, danke!"], ["Och du?", "Und dir?"], ["Ha en fin dag!", "Hab einen schönen Tag!"], ["Tack, detsamma!", "Danke, gleichfalls!"], ["Hej då!", "Tschüss!"]],
+  "grammar": {"title": "„Hur mår du?“", "text": "„mår“ kommt von „må“ (sich befinden). Wörtlich fragst du also: Wie befindest du dich? Die Antwort lautet genauso: Jag mår bra (Mir geht es gut). In Schweden duzt man fast alle, auch Fremde und Ältere."},
+  "tips": ["„Hej då“ klingt wie „hej doh“: å spricht man wie ein offenes o.", "„Jättebra“: jätte heißt Riese. Damit verstärkt man Wörter, jättegod = super lecker."]
+ },
+ {"id": "l2", "chapter": "ankomst", "title": "Vad heter du?", "de": "Sich vorstellen", "icon": "mascot",
+  "lines": [
+   {"who": "Erik", "t": [["Hej!", "Hallo!"], ["Jag", "ich"], ["heter", "heiße"], ["Erik.", "Erik."], ["Vad", "was"], ["heter", "heißt"], ["du?", "du?"]], "sense": "Hallo! Ich heiße Erik. Wie heißt du?"},
+   {"who": "Janina", "t": [["Jag", "ich"], ["heter", "heiße"], ["Janina.", "Janina."], ["Trevligt", "nett"], ["att", "zu"], ["träffas!", "sich-treffen!"]], "sense": "Ich heiße Janina. Schön, dich kennenzulernen!"},
+   {"who": "Erik", "t": [["Detsamma!", "Dasselbe!"], ["Var", "wo"], ["kommer", "kommst"], ["du", "du"], ["ifrån?", "her?"]], "sense": "Gleichfalls! Woher kommst du?"},
+   {"who": "Janina", "t": [["Jag", "ich"], ["kommer", "komme"], ["från", "aus"], ["Tyskland.", "Deutschland."]], "sense": "Ich komme aus Deutschland."},
+   {"who": "Erik", "t": [["Pratar", "sprichst"], ["du", "du"], ["svenska?", "Schwedisch?"]], "sense": "Sprichst du Schwedisch?"},
+   {"who": "Janina", "t": [["Lite.", "Wenig."], ["Jag", "ich"], ["lär", "lehre"], ["mig", "mich"], ["svenska", "Schwedisch"], ["just", "gerade"], ["nu.", "jetzt."]], "sense": "Ein bisschen. Ich lerne gerade Schwedisch."},
+   {"who": "Erik", "t": [["Vad", "was"], ["bra!", "gut!"], ["Du", "du"], ["pratar", "sprichst"], ["redan", "schon"], ["bra.", "gut."]], "sense": "Toll! Du sprichst schon gut."}
+  ],
+  "chunks": [["Vad heter du?", "Wie heißt du?"], ["Jag heter Janina.", "Ich heiße Janina."], ["Trevligt att träffas!", "Schön, dich kennenzulernen!"], ["Var kommer du ifrån?", "Woher kommst du?"], ["Jag kommer från Tyskland.", "Ich komme aus Deutschland."], ["Pratar du svenska?", "Sprichst du Schwedisch?"], ["Jag lär mig svenska.", "Ich lerne Schwedisch."], ["Vad bra!", "Toll!"]],
+  "grammar": {"title": "Verben: ein Form für alle", "text": "Im Präsens enden schwedische Verben meist auf -r, und die Form ist für alle Personen gleich: jag heter, du heter, hon heter, vi heter. Bei einer Ja/Nein-Frage steht das Verb vorn, wie im Deutschen: Pratar du svenska?"},
+  "tips": ["„Tyskland“ spricht man „Tüsk-land“: y ist wie ein deutsches ü.", "„lär mig“ = lerne mich: Lernen ist im Schwedischen reflexiv."]
+ },
+ {"id": "l3", "chapter": "ankomst", "title": "Var bor du?", "de": "Wohnen und reisen", "icon": "midsommar",
+  "lines": [
+   {"who": "Erik", "t": [["Var", "wo"], ["bor", "wohnst"], ["du,", "du,"], ["Janina?", "Janina?"]], "sense": "Wo wohnst du, Janina?"},
+   {"who": "Janina", "t": [["Jag", "ich"], ["bor", "wohne"], ["i", "in"], ["Tyskland.", "Deutschland."], ["Men", "aber"], ["jag", "ich"], ["vill", "will"], ["resa", "reisen"], ["till", "nach"], ["Sverige.", "Schweden."]], "sense": "Ich wohne in Deutschland. Aber ich will nach Schweden reisen."},
+   {"who": "Erik", "t": [["Vart", "wohin"], ["vill", "willst"], ["du", "du"], ["resa?", "reisen?"]], "sense": "Wohin willst du reisen?"},
+   {"who": "Janina", "t": [["Till", "nach"], ["Göteborg.", "Göteborg."], ["Jag", "ich"], ["vill", "will"], ["se", "sehen"], ["havet.", "Meer-das."]], "sense": "Nach Göteborg. Ich will das Meer sehen."},
+   {"who": "Erik", "t": [["Där", "dort"], ["är", "ist"], ["det", "es"], ["vackert!", "schön!"], ["Åk", "fahr"], ["dit", "dorthin"], ["på", "auf"], ["sommaren.", "Sommer-den."]], "sense": "Dort ist es schön! Fahr im Sommer hin."},
+   {"who": "Janina", "t": [["Och", "und"], ["du?", "du?"], ["Bor", "wohnst"], ["du", "du"], ["här", "hier"], ["i", "in"], ["Stockholm?", "Stockholm?"]], "sense": "Und du? Wohnst du hier in Stockholm?"},
+   {"who": "Erik", "t": [["Ja.", "Ja."], ["Kom", "komm"], ["hit", "hierher"], ["och", "und"], ["hälsa", "grüße"], ["på!", "auf!"]], "sense": "Ja. Komm her und besuch mich!"}
+  ],
+  "chunks": [["Var bor du?", "Wo wohnst du?"], ["Jag bor i Tyskland.", "Ich wohne in Deutschland."], ["Jag vill resa till Sverige.", "Ich will nach Schweden reisen."], ["Vart vill du resa?", "Wohin willst du reisen?"], ["Jag vill se havet.", "Ich will das Meer sehen."], ["Där är det vackert!", "Dort ist es schön!"], ["Kom hit och hälsa på!", "Komm her und besuch mich!"]],
+  "grammar": {"title": "Wo oder wohin?", "text": "Schwedisch unterscheidet Ort und Richtung, genau wie das Deutsche: var = wo, vart = wohin. här = hier, hit = hierher. där = dort, dit = dorthin. Und: „havet“ ist „hav“ (Meer) mit angehängtem -et. Der bestimmte Artikel steht hinten am Wort."},
+  "tips": ["„Sverige“ spricht man ungefähr „Swär-je“.", "„Göteborg“ sagt man „Jöte-borj“: g vor e, i, y, ä, ö klingt wie j."]
+ },
+ {"id": "l4", "chapter": "ankomst", "title": "På kaféet", "de": "Im Café bestellen", "icon": "fika",
+  "lines": [
+   {"who": "Café", "t": [["Hej!", "Hallo!"], ["Vad", "was"], ["får", "bekommt"], ["det", "es"], ["vara?", "sein?"]], "sense": "Hallo! Was darf es sein?"},
+   {"who": "Janina", "t": [["Jag", "ich"], ["vill", "will"], ["gärna", "gern"], ["ha", "haben"], ["en", "eine"], ["kopp", "Tasse"], ["kaffe.", "Kaffee."]], "sense": "Ich hätte gern eine Tasse Kaffee."},
+   {"who": "Café", "t": [["Något", "etwas"], ["mer?", "mehr?"]], "sense": "Sonst noch etwas?"},
+   {"who": "Janina", "t": [["En", "eine"], ["kanelbulle,", "Zimtschnecke,"], ["tack.", "danke."]], "sense": "Eine Zimtschnecke, bitte."},
+   {"who": "Café", "t": [["Det", "es"], ["blir", "wird"], ["femtio", "fünfzig"], ["kronor.", "Kronen."]], "sense": "Das macht fünfzig Kronen."},
+   {"who": "Janina", "t": [["Kan", "kann"], ["jag", "ich"], ["betala", "bezahlen"], ["med", "mit"], ["kort?", "Karte?"]], "sense": "Kann ich mit Karte zahlen?"},
+   {"who": "Café", "t": [["Ja,", "ja,"], ["absolut.", "absolut."], ["Varsågod!", "Sei-so-gut!"]], "sense": "Ja, klar. Bitte sehr!"}
+  ],
+  "chunks": [["Vad får det vara?", "Was darf es sein?"], ["Jag vill gärna ha en kopp kaffe.", "Ich hätte gern eine Tasse Kaffee."], ["Något mer?", "Sonst noch etwas?"], ["En kanelbulle, tack.", "Eine Zimtschnecke, bitte."], ["Det blir femtio kronor.", "Das macht fünfzig Kronen."], ["Kan jag betala med kort?", "Kann ich mit Karte zahlen?"], ["Varsågod!", "Bitte sehr!"]],
+  "grammar": {"title": "„tack“ heißt auch „bitte“", "text": "Ein eigenes Wort für „bitte“ beim Bestellen gibt es nicht. Man hängt einfach „tack“ an: En kanelbulle, tack. Wenn man etwas überreicht, sagt man „varsågod“ (wörtlich: sei so gut). „Jag vill gärna ha …“ ist die höfliche Form für „Ich hätte gern …“."},
+  "tips": ["„Varsågod“ klingt wie „Wahr-scho-guhd“.", "„kanelbulle“, Mehrzahl „kanelbullar“. Am 4. Oktober ist in Schweden „Kanelbullens dag“."]
+ },
+ {"id": "l5", "chapter": "ankomst", "title": "Hur mycket kostar det?", "de": "Zahlen und bezahlen", "icon": "kanelbulle",
+  "lines": [
+   {"who": "Janina", "t": [["Ursäkta,", "Entschuldigung,"], ["hur", "wie"], ["mycket", "viel"], ["kostar", "kosten"], ["äpplena?", "Äpfel-die?"]], "sense": "Entschuldigung, wie viel kosten die Äpfel?"},
+   {"who": "Säljaren", "t": [["Tre", "drei"], ["kronor", "Kronen"], ["styck.", "Stück."]], "sense": "Drei Kronen das Stück."},
+   {"who": "Janina", "t": [["Då", "dann"], ["tar", "nehme"], ["jag", "ich"], ["fem.", "fünf."]], "sense": "Dann nehme ich fünf."},
+   {"who": "Säljaren", "t": [["Fem", "fünf"], ["äpplen,", "Äpfel,"], ["det", "es"], ["blir", "wird"], ["femton", "fünfzehn"], ["kronor.", "Kronen."]], "sense": "Fünf Äpfel, das macht fünfzehn Kronen."},
+   {"who": "Janina", "t": [["Här", "hier"], ["är", "ist"], ["tjugo", "zwanzig"], ["kronor.", "Kronen."]], "sense": "Hier sind zwanzig Kronen."},
+   {"who": "Säljaren", "t": [["Tack", "danke"], ["så", "so"], ["mycket!", "viel!"], ["Fem", "fünf"], ["kronor", "Kronen"], ["tillbaka.", "zurück."]], "sense": "Vielen Dank! Fünf Kronen zurück."}
+  ],
+  "chunks": [["Ursäkta!", "Entschuldigung!"], ["Hur mycket kostar det?", "Wie viel kostet das?"], ["Tre kronor styck.", "Drei Kronen das Stück."], ["Då tar jag fem.", "Dann nehme ich fünf."], ["Det blir femton kronor.", "Das macht fünfzehn Kronen."], ["Tack så mycket!", "Vielen Dank!"], ["ett, två, tre, fyra, fem", "eins, zwei, drei, vier, fünf"], ["sex, sju, åtta, nio, tio", "sechs, sieben, acht, neun, zehn"]],
+  "grammar": {"title": "Das Verb steht an Platz 2", "text": "Wie im Deutschen steht das Verb im Aussagesatz an zweiter Stelle: „Då tar jag fem“ (Dann nehme ich fünf). Zahlen 11 bis 20: elva, tolv, tretton, fjorton, femton, sexton, sjutton, arton, nitton, tjugo."},
+  "tips": ["„sju“ (7) klingt wie ein weiches „schüh“. Der sj-Laut ist typisch schwedisch.", "„tjugo“ (20) spricht man „schü-go“.", "„åtta“ (8) klingt wie „otta“."]
+ },
+ {"id": "l6", "chapter": "ankomst", "title": "Djuren på gården", "de": "Tiere, en- und ett-Wörter", "icon": "happy",
+  "lines": [
+   {"who": "Janina", "t": [["Titta!", "Schau!"], ["Där", "dort"], ["är", "ist"], ["en", "ein"], ["häst.", "Pferd."]], "sense": "Schau! Da ist ein Pferd."},
+   {"who": "Karin", "t": [["Ja,", "ja,"], ["och", "und"], ["där", "dort"], ["är", "ist"], ["ett", "ein"], ["får.", "Schaf."]], "sense": "Ja, und da ist ein Schaf."},
+   {"who": "Janina", "t": [["Hästen", "Pferd-das"], ["är", "ist"], ["brun", "braun"], ["och", "und"], ["fåret", "Schaf-das"], ["är", "ist"], ["vitt.", "weiß."]], "sense": "Das Pferd ist braun und das Schaf ist weiß."},
+   {"who": "Karin", "t": [["Vi", "wir"], ["har", "haben"], ["också", "auch"], ["två", "zwei"], ["hundar", "Hunde"], ["och", "und"], ["en", "eine"], ["katt.", "Katze."]], "sense": "Wir haben auch zwei Hunde und eine Katze."},
+   {"who": "Janina", "t": [["Vad", "was"], ["heter", "heißen"], ["hundarna?", "Hunde-die?"]], "sense": "Wie heißen die Hunde?"},
+   {"who": "Karin", "t": [["Bella", "Bella"], ["och", "und"], ["Bosse.", "Bosse."], ["Katten", "Katze-die"], ["heter", "heißt"], ["Misse.", "Misse."]], "sense": "Bella und Bosse. Die Katze heißt Misse."}
+  ],
+  "chunks": [["Titta!", "Schau!"], ["Där är en häst.", "Da ist ein Pferd."], ["ett får", "ein Schaf"], ["Hästen är brun.", "Das Pferd ist braun."], ["Fåret är vitt.", "Das Schaf ist weiß."], ["två hundar och en katt", "zwei Hunde und eine Katze"], ["Vad heter hundarna?", "Wie heißen die Hunde?"]],
+  "grammar": {"title": "en-Wörter und ett-Wörter", "text": "Es gibt zwei Geschlechter: en (en häst, en katt) und ett (ett får). Der bestimmte Artikel wird angehängt: hästen (das Pferd), fåret (das Schaf), hundarna (die Hunde). Adjektive bekommen bei ett-Wörtern ein -t: hästen är vit, aber fåret är vitt."},
+  "tips": ["„får“ spricht man „fohr“.", "„häst“: ä wie im deutschen „Bett“."]
+ }
+]
+}
