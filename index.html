@@ -171,7 +171,7 @@ const DAY = 864e5;
 
 /* ---------- State ---------- */
 const DEF = () => ({v: 1, updated: 0, pts: 0, done: {}, cards: {}, days: {}, badges: {}, reviews: 0,
-  set: {theme: "auto", decode: "immer", rate: 0.85, sound: true, goalApp: 30, goalListen: 15, voice: "", multi: true}});
+  set: {theme: "auto", decode: "immer", rate: 0.85, sound: true, goalApp: 30, goalListen: 15, voice: "", multi: true, natural: true}});
 let S = DEF();
 try { const r = JSON.parse(localStorage.getItem("svenska-v2") || "null"); if (r && r.v) S = Object.assign(DEF(), r, {set: Object.assign(DEF().set, r.set || {})}); } catch (e) {}
 let D = null;                      // lesson data
@@ -201,7 +201,7 @@ let lastInput = Date.now(), speakingKind = null;
 ["pointerdown", "keydown", "scroll", "touchstart"].forEach(ev => addEventListener(ev, () => { lastInput = Date.now(); }, {passive: true}));
 setInterval(() => {
   if (document.visibilityState !== "visible") return;
-  const listening = speakingKind === "listen" && speechOK && window.speechSynthesis.speaking;
+  const listening = speakingKind === "listen" && isSpeaking();
   if (!listening && Date.now() - lastInput > 90000) return;
   const r = dayRec(today());
   if (listening) r.listen += 5; else r.app += 5;
@@ -241,7 +241,35 @@ function pickVoice() {
 if (speechOK) { pickVoice(); speechSynthesis.onvoiceschanged = () => { pickVoice(); if (ui.sheet) render(); }; }
 const keep = [];
 let playTok = 0;
-function speak(text, o = {}) {
+/* Natürliche Stimmen: vorab erzeugte Azure-Aufnahmen aus audio/index.json, sonst iPhone-Stimme */
+let AUDIO = {}, audioRes = null, audioTimer = null;
+const player = new Audio(); player.preload = "auto";
+const normWord = w => w.replace(/[!?.,…]/g, "").trim();
+function audioFile(text, who) {
+  if (!S.set.natural || !D || !D.voices) return null;
+  const voice = (who && D.voices.speakers[who]) || D.voices.default;
+  const f = AUDIO[voice + "|" + text.trim()];
+  return f ? "audio/" + f : null;
+}
+function playFile(src, text, o) {
+  return new Promise(res => {
+    clearInterval(audioTimer); audioRes = res;
+    const done = v => { clearInterval(audioTimer); if (audioRes === res) audioRes = null; res(v); };
+    player.onended = () => done(true); player.onerror = () => done(false);
+    player.src = src;
+    player.playbackRate = Math.min(1.3, Math.max(0.6, (o.rate || S.set.rate) / 0.85));
+    try { player.preservesPitch = true; } catch (e) {}
+    if (o.onboundary) audioTimer = setInterval(() => { if (player.duration) o.onboundary({charIndex: Math.floor(player.currentTime / player.duration * text.length)}); }, 120);
+    const p = player.play(); if (p && p.catch) p.catch(() => done(false));
+  });
+}
+const isSpeaking = () => (!player.paused && !player.ended) || (speechOK && window.speechSynthesis.speaking);
+async function speak(text, o = {}) {
+  const f = audioFile(text, o.who);
+  if (f) { const my = playTok, r = await playFile(f, text, o); if (r === true || r === "stopped" || my !== playTok) return r === true; }
+  return ttsSpeak(text, o);
+}
+function ttsSpeak(text, o = {}) {
   return new Promise(res => {
     if (!speechOK) return res(false);
     const u = new SpeechSynthesisUtterance(text.replace(/\.\.\.|…/g, " ").trim());
@@ -254,7 +282,7 @@ function speak(text, o = {}) {
     speechSynthesis.speak(u);
   });
 }
-function stopSpeech() { playTok++; speakingKind = null; if (ui.lesson && ui.lesson.playing) { ui.lesson.playing = false; ui.lesson.status = ""; needRender = true; } if (speechOK) speechSynthesis.cancel(); }
+function stopSpeech() { playTok++; speakingKind = null; if (ui.lesson && ui.lesson.playing) { ui.lesson.playing = false; ui.lesson.status = ""; needRender = true; } try { player.pause(); } catch (e) {} clearInterval(audioTimer); if (audioRes) { const r = audioRes; audioRes = null; r("stopped"); } if (speechOK) speechSynthesis.cancel(); }
 let needRender = false;
 function say(text, o) { stopSpeech(); return speak(text, o); }
 const lineText = l => l.t.map(p => p[0]).join(" ");
@@ -621,7 +649,9 @@ function sheet() {
   h += "<label>Erscheinungsbild</label>" + seg("theme", [["auto", "Automatisch"], ["light", "Hell"], ["dark", "Dunkel"]]);
   h += "<label>Wort-für-Wort-Übersetzung</label>" + seg("decode", [["immer", "Immer"], ["tippen", "Antippen"], ["aus", "Aus"]]) + '<p class="note">Am Anfang „Immer“. Ab Kapitel 2 lohnt sich „Antippen“.</p>';
   h += "<label>Sprechtempo</label>" + seg("rate", [[0.7, "Langsam"], [0.85, "Normal"], [1, "Schnell"]]);
-  h += '<label>Stimme für Janina</label>';
+  const nat = Object.keys(AUDIO).length > 0;
+  if (nat) h += "<label>Natürliche Stimmen</label>" + seg("natural", [[true, "An"], [false, "Aus"]]) + '<p class="note">Sofie, Hillevi und Mattias sind echte Aufnahmen mit natürlicher Stimme. Die iPhone-Stimme springt nur ein, wo es noch keine Aufnahme gibt.</p>';
+  h += '<label>' + (nat ? "iPhone-Stimme (Ersatz)" : "Stimme für Janina") + '</label>';
   if (!speechOK) h += '<p class="note">Dieses Gerät kann nicht vorlesen.</p>';
   else if (!svVoices.length) h += '<p class="note">Keine schwedische Stimme gefunden.</p>';
   else h += '<div style="display:flex;flex-direction:column;gap:8px">' + svVoices.map((v, i) => '<button class="btn ' + (v === svVoice ? "red" : "ghost") + ' block" style="justify-content:space-between" data-act="pickVoice" data-i="' + i + '" aria-pressed="' + (v === svVoice) + '"><span>' + esc(vLabel(v)) + "</span>" + ic("spk", 18) + "</button>").join("") + "</div>";
@@ -692,7 +722,7 @@ const A = {
   tok(d, el) {
     const ln = ui.lesson.l.lines[+d.l], p = ln.t[+d.t];
     if (S.set.decode === "tippen" || (ui.lesson.step === 3 && S.set.decode === "aus")) el.classList.toggle("show");
-    say(p[0].replace(/[!?.,]/g, ""), {who: ln.who});
+    say(normWord(p[0]));
     if (needRender) { needRender = false; render(); }
   },
   sayLine(d) { const ln = ui.lesson.l.lines[+d.l]; say(lineText(ln), {who: ln.who}); if (needRender) { needRender = false; render(); } },
@@ -759,6 +789,7 @@ if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catc
 document.addEventListener("change", e => {
   if (e.target && e.target.id === "impf" && e.target.files[0]) { e.target.files[0].text().then(t => { $("#imp").value = t; }); }
 });
+fetch("audio/index.json").then(r => r.ok ? r.json() : {}).catch(() => ({})).then(a => { AUDIO = a || {}; if (ui.sheet) render(); });
 fetch("lessons.json").then(r => r.json()).then(d => { D = d; checkBadges(); render(); initStorage(); })
   .catch(() => { $("#app").innerHTML = '<p style="padding:40px;text-align:center">Die Lektionen konnten nicht geladen werden. Bitte lade die Seite neu.</p>'; });
 </script>
