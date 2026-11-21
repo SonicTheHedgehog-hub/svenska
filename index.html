@@ -171,7 +171,7 @@ const DAY = 864e5;
 
 /* ---------- State ---------- */
 const DEF = () => ({v: 1, updated: 0, pts: 0, done: {}, cards: {}, days: {}, badges: {}, reviews: 0,
-  set: {theme: "auto", decode: "immer", rate: 0.85, sound: true, goalApp: 30, goalListen: 15}});
+  set: {theme: "auto", decode: "immer", rate: 0.85, sound: true, goalApp: 30, goalListen: 15, voice: "", multi: true}});
 let S = DEF();
 try { const r = JSON.parse(localStorage.getItem("svenska-v2") || "null"); if (r && r.v) S = Object.assign(DEF(), r, {set: Object.assign(DEF().set, r.set || {})}); } catch (e) {}
 let D = null;                      // lesson data
@@ -227,13 +227,16 @@ const sfx = {
 };
 
 /* ---------- Speech ---------- */
-let svVoice = null, voicesLoaded = false;
+let svVoice = null, svVoices = [], voicesLoaded = false;
+const vQual = v => /premium/i.test(v.voiceURI + v.name) ? 3 : /enhanced|erweitert|förbättrad/i.test(v.voiceURI + v.name) ? 2 : 1;
+const vLabel = v => v.name + (vQual(v) === 3 ? " · Premium" : vQual(v) === 2 ? " · Erweitert" : "");
 const speechOK = "speechSynthesis" in window;
 function pickVoice() {
   if (!speechOK) return;
   const vs = speechSynthesis.getVoices(); if (vs.length) voicesLoaded = true;
   const sv = vs.filter(v => (v.lang || "").toLowerCase().replace("_", "-").startsWith("sv"));
-  svVoice = sv.find(v => /alva|klara|premium|enhanced|förbättrad/i.test(v.name)) || sv[0] || null;
+  svVoices = sv.slice().sort((a, b) => vQual(b) - vQual(a) || (a.localService === b.localService ? 0 : a.localService ? -1 : 1));
+  svVoice = svVoices.find(v => v.voiceURI === S.set.voice) || svVoices[0] || null;
 }
 if (speechOK) { pickVoice(); speechSynthesis.onvoiceschanged = () => { pickVoice(); if (ui.sheet) render(); }; }
 const keep = [];
@@ -242,8 +245,9 @@ function speak(text, o = {}) {
   return new Promise(res => {
     if (!speechOK) return res(false);
     const u = new SpeechSynthesisUtterance(text.replace(/\.\.\.|…/g, " ").trim());
-    u.lang = "sv-SE"; if (svVoice) u.voice = svVoice;
-    u.rate = o.rate || S.set.rate; u.pitch = o.pitch || 1;
+    const v = o.who ? voiceFor(o.who) : svVoice;
+    u.lang = "sv-SE"; if (v) u.voice = v;
+    u.rate = o.rate || S.set.rate; u.pitch = o.pitch || (o.who && v === svVoice && o.who !== NAME ? .92 : 1);
     if (o.onboundary) u.onboundary = o.onboundary;
     u.onend = () => res(true); u.onerror = () => res(false);
     keep.push(u); if (keep.length > 20) keep.shift();
@@ -254,7 +258,14 @@ function stopSpeech() { playTok++; speakingKind = null; if (ui.lesson && ui.less
 let needRender = false;
 function say(text, o) { stopSpeech(); return speak(text, o); }
 const lineText = l => l.t.map(p => p[0]).join(" ");
-const pitchOf = who => who === NAME ? 1.12 : .95;
+// Janina spricht mit der gewählten Stimme, die anderen Figuren mit den übrigen schwedischen Stimmen.
+function voiceFor(who) {
+  if (!svVoice || who === NAME || !S.set.multi) return svVoice;
+  const others = svVoices.filter(v => v !== svVoice && v.name !== svVoice.name);
+  if (!others.length) return svVoice;
+  let h = 0; for (const c of who) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+  return others[h % others.length];
+}
 const wait = ms => new Promise(r => setTimeout(r, ms));
 
 /* ---------- FSRS ---------- */
@@ -536,7 +547,7 @@ async function playLesson(highlight) {
     document.querySelectorAll(".line.active,.tok.cur").forEach(x => x.classList.remove("active", "cur"));
     const le = $("#ln-" + i); if (le && highlight) { le.classList.add("active"); le.scrollIntoView({block: "center", behavior: "smooth"}); }
     const offs = []; let pos = 0; ln.t.forEach(p => { offs.push(pos); pos += p[0].length + 1; });
-    await speak(text, {pitch: pitchOf(ln.who), onboundary: highlight ? ev => {
+    await speak(text, {who: ln.who, onboundary: highlight ? ev => {
       if (my !== playTok) return;
       let k = 0; for (let j = 0; j < offs.length; j++) if (ev.charIndex >= offs[j]) k = j;
       document.querySelectorAll(".tok.cur").forEach(x => x.classList.remove("cur"));
@@ -595,7 +606,7 @@ async function playList(id) {
     if (my !== playTok) return;
     L.text = lineText(ln); L.sense = ln.sense; render();
     speakingKind = "listen";
-    await speak(L.text, {pitch: pitchOf(ln.who)});
+    await speak(L.text, {who: ln.who});
     if (my !== playTok) return;
     await wait(1100);
   }
@@ -610,7 +621,12 @@ function sheet() {
   h += "<label>Erscheinungsbild</label>" + seg("theme", [["auto", "Automatisch"], ["light", "Hell"], ["dark", "Dunkel"]]);
   h += "<label>Wort-für-Wort-Übersetzung</label>" + seg("decode", [["immer", "Immer"], ["tippen", "Antippen"], ["aus", "Aus"]]) + '<p class="note">Am Anfang „Immer“. Ab Kapitel 2 lohnt sich „Antippen“.</p>';
   h += "<label>Sprechtempo</label>" + seg("rate", [[0.7, "Langsam"], [0.85, "Normal"], [1, "Schnell"]]);
-  h += '<label>Stimme</label><div class="card" style="margin:0;display:flex;align-items:center;gap:10px"><div style="flex:1">' + (!speechOK ? "Dieses Gerät kann nicht vorlesen." : svVoice ? "Schwedisch: <b>" + esc(svVoice.name) + "</b>" : "Keine schwedische Stimme gefunden.") + '</div><button class="btn ghost" data-act="testVoice">Probe</button></div>';
+  h += '<label>Stimme für Janina</label>';
+  if (!speechOK) h += '<p class="note">Dieses Gerät kann nicht vorlesen.</p>';
+  else if (!svVoices.length) h += '<p class="note">Keine schwedische Stimme gefunden.</p>';
+  else h += '<div style="display:flex;flex-direction:column;gap:8px">' + svVoices.map((v, i) => '<button class="btn ' + (v === svVoice ? "red" : "ghost") + ' block" style="justify-content:space-between" data-act="pickVoice" data-i="' + i + '" aria-pressed="' + (v === svVoice) + '"><span>' + esc(vLabel(v)) + "</span>" + ic("spk", 18) + "</button>").join("") + "</div>";
+  if (svVoices.length > 1) h += "<label>Figuren mit eigenen Stimmen</label>" + seg("multi", [[true, "An"], [false, "Aus"]]) + '<p class="note">Anna, Erik und die anderen sprechen dann mit den übrigen schwedischen Stimmen auf dem iPhone.</p>';
+  else if (speechOK && svVoices.length === 1) h += '<p class="note">Für verschiedene Stimmen der Figuren auf dem iPhone weitere schwedische Stimmen laden (z. B. Klara oder Oskar) und die App neu starten.</p>';
   if (speechOK && !svVoice) h += '<p class="note">iPhone: Einstellungen › Bedienungshilfen › Gesprochene Inhalte › Stimmen › Schwedisch, dort „Alva“ laden.</p>';
   h += "<label>Töne</label>" + seg("sound", [[true, "An"], [false, "Aus"]]);
   h += "<label>Tagesziel Lernen</label>" + seg("goalApp", [[20, "20 Min"], [30, "30 Min"], [45, "45 Min"]]);
@@ -657,6 +673,7 @@ const A = {
     S.set[d.k] = v; save(); render();
     if (d.k === "sound" && v) sfx.ok();
   },
+  pickVoice(d) { const v = svVoices[+d.i]; if (!v) return; S.set.voice = v.voiceURI; svVoice = v; save(); render(); say("Hej " + NAME + "! Så här låter jag."); },
   testVoice() { say("Hej " + NAME + "! Välkommen till Svenska. Hur mår du idag?"); },
   rateSet(d) { S.set.rate = +d.v; save(); render(); },
   decode(d) { S.set.decode = d.v; save(); render(); },
@@ -675,12 +692,12 @@ const A = {
   tok(d, el) {
     const ln = ui.lesson.l.lines[+d.l], p = ln.t[+d.t];
     if (S.set.decode === "tippen" || (ui.lesson.step === 3 && S.set.decode === "aus")) el.classList.toggle("show");
-    say(p[0].replace(/[!?.,]/g, ""), {pitch: pitchOf(ln.who)});
+    say(p[0].replace(/[!?.,]/g, ""), {who: ln.who});
     if (needRender) { needRender = false; render(); }
   },
-  sayLine(d) { const ln = ui.lesson.l.lines[+d.l]; say(lineText(ln), {pitch: pitchOf(ln.who)}); if (needRender) { needRender = false; render(); } },
+  sayLine(d) { const ln = ui.lesson.l.lines[+d.l]; say(lineText(ln), {who: ln.who}); if (needRender) { needRender = false; render(); } },
   revLine(d, el) { const le = $("#ln-" + d.l); if (le) le.classList.toggle("rev"); el.textContent = le && le.classList.contains("rev") ? "Übersetzung verbergen" : "Übersetzung zeigen"; },
-  shPlay(d) { const L = ui.lesson, ln = L.l.lines[L.sh]; say(lineText(ln), {rate: d.r === "1" ? S.set.rate : 0.6, pitch: pitchOf(ln.who)}); },
+  shPlay(d) { const L = ui.lesson, ln = L.l.lines[L.sh]; say(lineText(ln), {rate: d.r === "1" ? S.set.rate : 0.6, who: ln.who}); },
   shNext() { const L = ui.lesson; stopSpeech(); Rec.reset(); L.sh++; render(); },
   async recStart() { stopSpeech(); await Rec.start(); },
   recStop() { Rec.stop(); },
