@@ -650,7 +650,7 @@ function sheet() {
   h += "<label>Wort-für-Wort-Übersetzung</label>" + seg("decode", [["immer", "Immer"], ["tippen", "Antippen"], ["aus", "Aus"]]) + '<p class="note">Am Anfang „Immer“. Ab Kapitel 2 lohnt sich „Antippen“.</p>';
   h += "<label>Sprechtempo</label>" + seg("rate", [[0.7, "Langsam"], [0.85, "Normal"], [1, "Schnell"]]);
   const nat = Object.keys(AUDIO).length > 0;
-  if (nat) h += "<label>Natürliche Stimmen</label>" + seg("natural", [[true, "An"], [false, "Aus"]]) + '<p class="note">Sofie, Hillevi und Mattias sind echte Aufnahmen mit natürlicher Stimme. Die iPhone-Stimme springt nur ein, wo es noch keine Aufnahme gibt.</p>';
+  if (nat) h += "<label>Natürliche Stimmen</label>" + seg("natural", [[true, "An"], [false, "Aus"]]) + '<p class="note">Vorab erzeugte Aufnahmen mit eigenen Stimmen für die Figuren. Die iPhone-Stimme springt nur ein, wo es noch keine Aufnahme gibt. Stimme „Alma“: yeagersthlm, CC BY 4.0.</p>';
   h += '<label>' + (nat ? "iPhone-Stimme (Ersatz)" : "Stimme für Janina") + '</label>';
   if (!speechOK) h += '<p class="note">Dieses Gerät kann nicht vorlesen.</p>';
   else if (!svVoices.length) h += '<p class="note">Keine schwedische Stimme gefunden.</p>';

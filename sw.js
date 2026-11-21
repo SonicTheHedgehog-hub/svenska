@@ -1,5 +1,5 @@
 // Offline-Speicher der App. Bei jeder Änderung VERSION erhöhen.
-const VERSION = "svenska-v6";
+const VERSION = "svenska-v7";
 const CORE = ["./", "./index.html", "./lessons.json", "./manifest.webmanifest", "./img/badge-30.webp","./img/badge-7.webp","./img/badge-start.webp","./img/celebrating.webp","./img/ch-ankomst.webp","./img/ch-samhallet.webp","./img/ch-vanner.webp","./img/ch-vardag.webp","./img/fika.webp","./img/flagga.webp","./img/happy.webp","./img/icon-180.png","./img/icon-192.png","./img/icon-512.png","./img/jump.webp","./img/kanelbulle.webp","./img/listening.webp","./img/ljus.webp","./img/mascot.webp","./img/midsommar.webp","./img/reading.webp","./img/sleeping.webp","./img/thinking.webp"];
 
 self.addEventListener("install", e => {

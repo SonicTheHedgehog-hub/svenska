@@ -1,9 +1,12 @@
 name: Stimmen erzeugen
 
+# Ohne Azure-Schlüssel: Piper (kostenlos, ohne Konto).
+# Mit den Secrets AZURE_SPEECH_KEY und AZURE_SPEECH_REGION: Azure Neural (Free-Tarif F0).
+
 on:
   push:
     branches: [main]
-    paths: ["lessons.json", "tools/tts.mjs"]
+    paths: ["lessons.json", "tools/tts.mjs", "tools/tts_piper.py", ".github/workflows/audio.yml"]
   workflow_dispatch:
 
 permissions:
@@ -17,16 +20,35 @@ concurrency:
 jobs:
   tts:
     runs-on: ubuntu-latest
+    env:
+      AZURE_SPEECH_KEY: ${{ secrets.AZURE_SPEECH_KEY }}
+      AZURE_SPEECH_REGION: ${{ secrets.AZURE_SPEECH_REGION }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+
+      - name: Azure-Stimmen
+        if: env.AZURE_SPEECH_KEY != ''
+        uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Audiodateien erzeugen
-        env:
-          AZURE_SPEECH_KEY: ${{ secrets.AZURE_SPEECH_KEY }}
-          AZURE_SPEECH_REGION: ${{ secrets.AZURE_SPEECH_REGION }}
+      - name: Azure-Audiodateien erzeugen
+        if: env.AZURE_SPEECH_KEY != ''
         run: node tools/tts.mjs
+
+      - name: Piper einrichten
+        if: env.AZURE_SPEECH_KEY == ''
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+          pip install -q piper-tts
+          mkdir -p voices
+          python -m piper.download_voices --data-dir voices sv_SE-nst-medium
+          curl -fsSL -o voices/sv_SE-alma-medium.onnx "https://huggingface.co/yeagersthlm/piper-voice-sv-alma/resolve/main/sv_SE-alma-medium.onnx?download=true" || true
+          curl -fsSL -o voices/sv_SE-alma-medium.onnx.json "https://huggingface.co/yeagersthlm/piper-voice-sv-alma/resolve/main/sv_SE-alma-medium.onnx.json?download=true" || rm -f voices/sv_SE-alma-medium.onnx
+          ls -la voices
+      - name: Piper-Audiodateien erzeugen
+        if: env.AZURE_SPEECH_KEY == ''
+        run: python tools/tts_piper.py voices
+
       - name: Speichern
         run: |
           git config user.name "github-actions[bot]"
@@ -35,5 +57,4 @@ jobs:
           if git diff --cached --quiet; then echo "Keine neuen Audiodateien."; exit 0; fi
           git commit -m "Audiodateien aktualisiert"
           git push
-          # GitHub Pages neu bauen lassen
           curl -s -X POST -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/${{ github.repository }}/pages/builds" || true

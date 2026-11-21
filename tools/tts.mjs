@@ -1,6 +1,6 @@
 // Erzeugt natürliche Audiodateien (Azure Neural TTS) für alle Sätze und Wörter in lessons.json.
 // Läuft als GitHub Action. Braucht die Secrets AZURE_SPEECH_KEY und AZURE_SPEECH_REGION.
-// Bereits erzeugte Dateien werden übersprungen, daher wird jeder Satz nur einmal berechnet.
+// Bereits mit Azure erzeugte Dateien werden übersprungen; Piper-Dateien werden durch Azure ersetzt.
 import fs from "node:fs";
 import crypto from "node:crypto";
 
